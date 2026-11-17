@@ -1,17 +1,41 @@
 <script setup lang="ts">
+import { computed, ref, watch } from "vue";
 import { ArrowLeft, ArrowRight, Quote } from "lucide-vue-next";
 import { readingDuration } from "../lib/transcript";
+import { useFocusTrap } from "../../a11y";
 import type { Branch } from "../model/branch";
-defineProps<{ branch: Branch }>();
-defineEmits<{ back: [] }>();
+const props = defineProps<{ branch: Branch }>();
+const emit = defineEmits<{ back: [] }>();
+const panel = ref<HTMLElement>();
+const open = computed(() => !!props.branch.personId.value);
+const trap = useFocusTrap(panel, open);
+watch(
+  () => props.branch.personId.value,
+  (id, old) => {
+    if (id && !old) {
+      trap.enter();
+    } else if (!id && old) {
+      trap.restore();
+    }
+  },
+);
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === "Escape") {
+    e.stopPropagation();
+    emit("back");
+  }
+}
 </script>
 <template>
   <section
     v-if="branch.person.value"
+    ref="panel"
     class="interview"
     role="dialog"
     aria-modal="true"
-    aria-label="人物访谈"
+    :aria-label="`人物访谈：${branch.person.value.name}`"
+    tabindex="-1"
+    @keydown="onKeydown"
   >
     <div class="interview-art">
       <div class="portrait">{{ branch.person.value.name.slice(0, 1) }}</div>
@@ -19,7 +43,7 @@ defineEmits<{ back: [] }>();
     </div>
     <div class="interview-body">
       <button class="text-button" @click="$emit('back')">
-        <ArrowLeft :size="16" /> 返回主线</button
+        <ArrowLeft :size="16" /> 返回主线 (Esc)</button
       ><small
         >PEOPLE OF THE HARBOR · 预计
         {{ readingDuration(branch.person.value.paragraphs) }} 秒</small
@@ -28,7 +52,12 @@ defineEmits<{ back: [] }>();
       <p class="muted">{{ branch.person.value.role }}</p>
       <Quote class="quote-icon" />
       <blockquote>{{ branch.person.value.quote }}</blockquote>
-      <p class="transcript">
+      <p
+        class="transcript"
+        :key="branch.paragraph.value"
+        role="status"
+        aria-live="polite"
+      >
         {{ branch.person.value.paragraphs[branch.paragraph.value] }}
       </p>
       <div class="interview-pages">
@@ -38,8 +67,8 @@ defineEmits<{ back: [] }>();
         >
           上一段</button
         ><span
-          >{{ branch.paragraph.value + 1 }} /
-          {{ branch.person.value.paragraphs.length }}</span
+          >第 {{ branch.paragraph.value + 1 }} 段，共
+          {{ branch.person.value.paragraphs.length }} 段</span
         ><button
           v-if="
             branch.paragraph.value < branch.person.value.paragraphs.length - 1

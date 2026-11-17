@@ -1188,3 +1188,135 @@ blockquote {
 
 .panorama>canvas{z-index:0}.panorama>.film-texture{z-index:1}.stage-shade{z-index:2}.hotspot-layer{z-index:4}.stage-top,.scene-caption,.drag-hint,.compass{z-index:3}
 .voices{min-width:0}
+
+/* ===== 无障碍叙事通道 ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.keyboard-guide {
+  margin: 20px 0;
+  padding: 14px 12px;
+  border: 1px solid #b4d5c02e;
+  border-radius: 3px;
+  background: #182628;
+}
+.keyboard-guide.disabled {
+  opacity: 0.55;
+}
+.kg-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: #c3d6c6;
+  letter-spacing: 1px;
+}
+.kg-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #ffffff17;
+  border-radius: 2px;
+  padding: 8px 10px;
+  margin-top: 9px;
+  font-size: 11px;
+  color: #bdd0c0;
+  background: #1d2d2c;
+}
+.kg-btn:hover:not(:disabled) {
+  border-color: #9cc6aa73;
+  color: #dcefd9;
+}
+.kg-btn.kg-primary {
+  background: #b7d2bc;
+  color: #18372b !important;
+  border-color: #b7d2bc;
+}
+.kg-hint {
+  margin: 10px 0 0;
+  font-size: 9px;
+  line-height: 1.7;
+  color: #71877b;
+  letter-spacing: 0.5px;
+}
+.narration-panel {
+  position: absolute;
+  z-index: 7;
+  left: 22px;
+  top: 80px;
+  width: 300px;
+  max-height: 62%;
+  overflow: auto;
+  background: #162727f2;
+  border: 1px solid #91bba654;
+  border-radius: 4px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 10px 50px #0006;
+}
+.narration-panel .np-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #9fbda9;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.narration-panel .np-head span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.narration-panel p {
+  font-size: 12px;
+  color: #c3d3c5;
+  line-height: 1.9;
+}
+.narration-panel small {
+  display: block;
+  margin-top: 12px;
+  font-size: 9px;
+  line-height: 1.7;
+  color: #71877b;
+}
+.detail-card .expired-note {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  color: #e8d6ad;
+  font-size: 11px;
+  margin-bottom: 14px;
+}
+.hotspot.active > span {
+  border-color: #e7f5e2;
+  background: #2f5745d9;
+  box-shadow: 0 0 0 7px #d2e4c833, 0 0 22px #cdeccd66;
+}
+.hotspot.active strong {
+  color: #f2faee;
+}
+.interview:focus-visible,
+.stage:focus-visible {
+  outline: none;
+}
+/* 减少动态效果：即便 JS 偏好判断失效，CSS 也兜底关闭过渡与动画。 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
